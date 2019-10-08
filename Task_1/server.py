@@ -3,44 +3,38 @@
 from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
 
-
 def accept_incoming_connections():
     """Sets up handling for incoming clients."""
     while True:
         client, client_address = SERVER.accept()
-        print("%s:%s has connected." % client_address)
-        client.send(bytes("Greetings from the cave! Now type your name and press enter!", "utf8"))
+
+        print("%s has connected." % client_address[0])
         addresses[client] = client_address
-        Thread(target=handle_client, args=(client,)).start()
+        Thread(target=handle_client, args=(client,client_address[0],)).start()
+        if len(addresses) == 2:
+            msgOper = input("Entre com a operação matemática");
+
+            if(msgOper):
+                broadcast(msgOper);
 
 
-def handle_client(client):  # Takes client socket as argument.
+def handle_client(client, name):  # Takes client socket as argument.
     """Handles a single client connection."""
 
-    name = client.recv(BUFSIZ).decode("utf8")
-    welcome = 'Welcome %s! If you ever want to quit, type {quit} to exit.' % name
-    client.send(bytes(welcome, "utf8"))
-    msg = "%s has joined the chat!" % name
-    broadcast(bytes(msg, "utf8"))
-    clients[client] = name
+    clients[client] = client
 
     while True:
+        global bTrue
         msg = client.recv(BUFSIZ)
-        if msg != bytes("{quit}", "utf8"):
-            broadcast(msg, name + ": ")
-        else:
-            client.send(bytes("{quit}", "utf8"))
-            client.close()
-            del clients[client]
-            broadcast(bytes("%s has left the chat." % name, "utf8"))
-            break
+        if  bTrue:
+            print(name, msg)
+            bTrue = False
 
 
 def broadcast(msg, prefix=""):  # prefix is for name identification.
     """Broadcasts a message to all the clients."""
-
     for sock in clients:
-        sock.send(bytes(prefix, "utf8") + msg)
+        sock.send(bytes(msg, "utf8"))
 
 
 clients = {}
@@ -50,7 +44,7 @@ HOST = ''
 PORT = 33000
 BUFSIZ = 1024
 ADDR = (HOST, PORT)
-
+bTrue = True
 SERVER = socket(AF_INET, SOCK_STREAM)
 SERVER.bind(ADDR)
 
