@@ -64,7 +64,7 @@ def conectClients():
 
 #CONEXAO SERVIDOR
 BUFSIZ = 1024
-ADDR = ('192.168.43.34', 33000)
+ADDR = ('192.168.1.158', 33000)
 
 client_socket_server = socket(AF_INET, SOCK_STREAM)
 client_socket_server.connect(ADDR)
@@ -97,9 +97,9 @@ def handle_client(client, name):  # Takes client socket as argument.
 def mandaMsg():  # prefix is for name identification.
     """Broadcasts a message to all the clients."""
     for sock in clients:
-        ip = (sock.getsockname()[0])
+        ip = (sock.getpeername()[0])
         msg = input("Entre com o valor para o "+ip+" ")
-        sock.send(bytes("Cliente:"+msg, "utf8"))
+        sock.send(bytes("Cliente 1:"+msg, "utf8"))
 
 
 clients = {}
@@ -115,8 +115,8 @@ SERVER = socket(AF_INET, SOCK_STREAM)
 SERVER.bind(ADDR)
 
 clientsConnection = [
-    ('192.168.43.34', 33002),
-    #('192.168.43.34', 33003)
+    ('192.168.1.162', 33002),
+    ('192.168.2.12', 33003)
 ]
 
 
