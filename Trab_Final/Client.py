@@ -4,11 +4,17 @@ from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
 import collections
 import math
+import requests
 
 bConectClient = True
 
 messageArray = []
 
+ipClient = '1.1.1.1'
+
+def postApi(data):
+    API_ENDPOINT = "http://localhost:3000/evento/create"
+    r = requests.post(url=API_ENDPOINT, json=data)
 
 def receive(client_socket):
     global bConectClient
@@ -42,7 +48,9 @@ def consenso():
         if (math.trunc(len(messageArray) / 3) + 1) < item[1]:
             resposta = item[0]
 
+    postApi({'origem': ipClient, 'destino': 'server', 'valor': resposta, 'traidor': ''})
     send(client_socket_server, resposta)
+
 
 
 def send(client_socket, mensagem):  # event is passed by binders.
@@ -64,7 +72,7 @@ def conectClients():
 
 #CONEXAO SERVIDOR
 BUFSIZ = 1024
-ADDR = ('192.168.1.158', 33000)
+ADDR = ('192.168.0.103', 33000)
 
 client_socket_server = socket(AF_INET, SOCK_STREAM)
 client_socket_server.connect(ADDR)
@@ -89,21 +97,34 @@ def handle_client(client, name):  # Takes client socket as argument.
     clients[client] = client
 
     while True:
-        global bTrue
         msg = client.recv(BUFSIZ)
         if msg:
             print(name, msg)
 
 def mandaMsg():  # prefix is for name identification.
+    global valorAntigo
+
     """Broadcasts a message to all the clients."""
     for sock in clients:
+        traidor = 0
         ip = (sock.getpeername()[0])
         msg = input("Entre com o valor para o "+ip+" ")
+
+        if valorAntigo == "":
+            valorAntigo = msg;
+        elif valorAntigo != msg:
+            traidor = 1
+        ip = (sock.getpeername()[0])
+        postApi({'origem': ipClient, 'destino': ip, 'valor': msg, 'traidor': traidor})
+
         sock.send(bytes("Cliente 1:"+msg, "utf8"))
+
+
 
 
 clients = {}
 addresses = {}
+valorAntigo = ""
 
 #LIBERANDO CONEXAO VIA SOCKET
 HOST = ''
@@ -115,10 +136,11 @@ SERVER = socket(AF_INET, SOCK_STREAM)
 SERVER.bind(ADDR)
 
 clientsConnection = [
-    ('192.168.1.162', 33002),
-    ('192.168.2.12', 33003)
+    ('192.168.0.103', 33002),
+    #('192.168.2.12', 33003)
 ]
 
+postApi({'origem': ipClient, 'destino': '', 'valor': 'conectado', 'traidor': ''})
 
 if __name__ == "__main__":
     SERVER.listen(5)
