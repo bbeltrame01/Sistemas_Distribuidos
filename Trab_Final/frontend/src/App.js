@@ -9,11 +9,12 @@ import Crown from './img/crown.png';
 import General from './img/general.png';
 
 function App() {
+  const API = `http://localhost:4000/evento`; // Atualizar API
   const server = "server";
-  const clients = ["1.1.1.1","2.2.2.2","3.3.3.3"];
+  const clients = ["1.1.1.1","2.2.2.2","3.3.3.3"]; // Atualizar endereço de clients
 
   const buscaEventos = () =>{    
-    fetch(`http://localhost:4000/evento`)
+    fetch(API)
     .then(response => response.json())
     .then(response => {
       response.forEach( function (el, idx) { 
