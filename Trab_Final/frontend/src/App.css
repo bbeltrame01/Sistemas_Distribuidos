@@ -1,0 +1,63 @@
+.Content {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+}
+
+.Image {
+  padding: 10px;
+}
+
+.General {
+  padding: 0 50px;
+}
+
+.Generais {
+  display: flex;
+  justify-items: center;
+  align-items: center;
+}
+
+.Generais p {
+  position: relative;
+  margin: 0;
+  text-align: center;
+  font-weight: bold;
+}
+
+.Generais ul {
+  position: relative;
+  margin: 0;
+  text-align: center;
+  font-size: small;
+  text-decoration: none;
+  list-style: none;
+  font-weight: bold;
+  padding: 0;
+}
+
+.Header {
+  position: fixed;
+  width: 100%;
+  color: #FFF;
+  background-color: #282c34;
+  display: flex;  
+  flex-direction: row;
+  align-items: center;
+  top: 0;
+  z-index: 5;
+}
+
+.Header button {
+  background-color: rgb(255, 0, 0); /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
