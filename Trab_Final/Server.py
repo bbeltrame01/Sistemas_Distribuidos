@@ -4,11 +4,23 @@ from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
 import collections
 import math
+import requests
+import serial
+import time
 
 respClients = []
-totalClients = 3
+totalClients = 2
 operacao = ""
+arduino = serial.Serial('COM6', 9600)
+
+
+def postApi(data):
+    API_ENDPOINT = "http://localhost:3000/evento/create"
+    r = requests.post(url=API_ENDPOINT, json=data)
+
+
 def accept_incoming_connections():
+    global operacao
     """Sets up handling for incoming clients."""
     while True:
         client, client_address = SERVER.accept()
@@ -17,9 +29,8 @@ def accept_incoming_connections():
         addresses[client] = client_address
         Thread(target=handle_client, args=(client,client_address[0],)).start()
         if len(addresses) == totalClients:
-            entrada = input("Entre com a operação ( 1 = ligar/ 2 = desligar)")
-            operacao = entrada
             mandaMsg();
+
 
 
 def handle_client(client, name):  # Takes client socket as argument.
@@ -48,17 +59,34 @@ def consenso():
 
     if bool(result) and result != "False":
         print("A operação será executada")
+        arduinoLed()
     else:
         print("Sem consenso, nenhuma operação será executada")
 
 def mandaMsg():  # prefix is for name identification.
+    global valorAntigo
+    global operacao
     """Broadcasts a message to all the clients."""
+    entrada = input("Entre com a operação ( 0 = desligar / 1 = ligar )")
+    operacao = entrada
     for sock in clients:
+        traidor = 0
         ip = (sock.getpeername()[0])
-        msg = input("Entre com o valor para o "+ ip+" ")
+        msg = input("Entre com o valor para o "+ip+" ")
+
+        if valorAntigo == "":
+            valorAntigo = msg;
+        elif valorAntigo != msg:
+            traidor = 1
+
+        postApi({'origem': 'server', 'destino': ip, 'valor': msg, 'traidor': traidor})
         sock.send(bytes("Servidor:" +msg, "utf8"))
 
 
+def arduinoLed():
+    arduino.write(bytes(operacao, "utf8"))
+
+valorAntigo = ""
 clients = {}
 addresses = {}
 
