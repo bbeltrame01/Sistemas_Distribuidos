@@ -35,7 +35,15 @@ function App() {
         if(el.traidor === "1"){
           document.getElementById("traidor"+el.origem).style = "background-color: red";
         }
-      }, 1000*idx);     
+      }, 1000*idx);
+      fetch(API+`/delete`,{ 
+         method:"POST",
+         body: JSON.stringify({ "id":el._id}),
+         headers: {
+          'Accept': 'application/json, text/plain, /',
+          'Content-Type': 'application/json'
+        },
+        }) 
       });
     })
   };
