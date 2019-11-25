@@ -57,27 +57,16 @@ function App() {
         <img id={"traidor"+server} width="100" src={Crown} alt="crown" />
         <FadeIn transitionDuration={1000}>
           <div className="Generais">
-            <div className="General">
-              <p id={"valorClient"+clients[0]}></p>
-              <img id={"traidor"+clients[0]} width="100" src={General} alt="client1" />              
-              <ul id={"vDestino"+clients[0]}>
-                <li id={clients[0]}></li>
-              </ul>
-            </div>
-            <div className="General">
-              <p id={"valorClient"+clients[1]}></p>
-              <img id={"traidor"+clients[1]} width="100" src={General} alt="client2" />
-              <ul id={"vDestino"+clients[1]}>
-                <li id={clients[1]}></li>
-              </ul>
-            </div>
-            <div className="General" id='cliente3'>
-              <p id={"valorClient"+clients[2]}></p>
-              <img id={"traidor"+clients[2]} width="100" src={General} alt="client3" />
-              <ul id={"vDestino"+clients[2]}>
-                <li id={clients[2]}></li>
-              </ul>
-            </div>
+          {clients.map((client, idx) => {
+            return(
+              <div className="General">
+                <p id={"valorClient"+client}></p>
+                <img id={"traidor"+client} width="100" src={General} alt="client1" />              
+                <ul id={"vDestino"+client}>
+                  <li id={client}></li>
+                </ul>
+              </div>
+            )})}          
           </div>
         </FadeIn>
         <img className="Image" width="250" src={Castle} alt="castle" />
