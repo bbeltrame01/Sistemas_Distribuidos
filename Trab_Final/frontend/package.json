@@ -12,7 +12,8 @@
     "react-arrow": "^2.0.4",
     "react-dom": "^16.12.0",
     "react-fade-in": "^0.1.6",
-    "react-scripts": "^3.4.0"
+    "react-scripts": "^3.4.0",
+    "serialize-javascript": "^3.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
